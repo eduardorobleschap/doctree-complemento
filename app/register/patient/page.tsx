@@ -43,15 +43,54 @@ export default async function PatientRegisterPage({ searchParams }: RegisterPage
     const dataToHash = `${nombreCompleto}${AVISO_VERSION}${timestamp}${ip}`;
     const firmaHash = crypto.createHash('sha256').update(dataToHash).digest('hex');
 
-    // 2.3 Preparar el payload separando las casillas
-    const { aceptoPrivacidad, noDatosSecundarios, ...restoDatos } = datos;
-
-    // Combinar los datos del formulario con el doctor_id capturado y campos de auditoría.
+    // 2.3 Preparar el payload mapeando los campos camelCase a snake_case para la base de datos de Supabase.
     const payload = {
-      ...restoDatos,
       doctor_id: doctorId,
-      aviso_privacidad_aceptado: aceptoPrivacidad || false,
-      fines_secundarios_aceptados: noDatosSecundarios === false, // Si "noDeseo" es true, aceptado es false
+      nombre: datos.nombre,
+      apellido_paterno: datos.apellidoPaterno,
+      apellido_materno: datos.apellidoMaterno || null,
+      curp: datos.curp || null,
+      fecha_nacimiento: datos.fechaNacimiento || null,
+      edad: datos.edad || null,
+      sexo: datos.sexo || null,
+      telefono: datos.telefono || null,
+      correo: datos.correo || null,
+      ocupacion: datos.ocupacion || null,
+      genero: datos.genero || null,
+      nacionalidad: datos.nacionalidad || null,
+      estado_civil: datos.estadoCivil || null,
+      motivo: datos.motivo || null,
+      firma: datos.firma || null,
+      calle_numero: datos.calleNumero || null,
+      colonia: datos.colonia || null,
+      ciudad: datos.ciudad || null,
+      estado: datos.estado || null,
+      codigo_postal: datos.codigoPostal || null,
+      
+      // Antecedentes (Historia Clínica)
+      hc_diabetes_fam: datos.hc_diabetesFam || null,
+      hc_cancer_fam: datos.hc_cancerFam || null,
+      hc_presion_alta_fam: datos.hc_presionAltaFam || null,
+      hc_otra_enf_fam: datos.hc_otraEnfFam || null,
+      hc_alergico: datos.hc_alergico || null,
+      hc_medicamentos: datos.hc_medicamentos || null,
+      hc_cirugias: datos.hc_cirugias || null,
+      hc_enfermedades: datos.hc_enfermedades || null,
+      hc_transfusiones: datos.hc_transfusiones || null,
+      hc_hepatitis_a: datos.hc_hepatitisA || false,
+      hc_hepatitis_b: datos.hc_hepatitisB || false,
+      hc_hepatitis_c: datos.hc_hepatitisC || false,
+      hc_diabetico: datos.hc_diabetico || null,
+      hc_presion_alta: datos.hc_presionAlta || null,
+      hc_fuma: datos.hc_fuma || null,
+      hc_alcohol_frecuencia: datos.hc_alcoholFrecuencia || null,
+      hc_alcohol_cantidad: datos.hc_alcoholCantidad || null,
+      hc_drogas: datos.hc_drogas || null,
+      hc_ejercicio: datos.hc_ejercicio || null,
+      
+      // Metadatos de firma electrónica y aviso de privacidad
+      aviso_privacidad_aceptado: datos.aceptoPrivacidad || false,
+      fines_secundarios_aceptados: datos.noDatosSecundarios === false,
       aviso_version: AVISO_VERSION,
       firma_ip: ip,
       firma_user_agent: userAgent,
